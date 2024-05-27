@@ -40,6 +40,21 @@ app.post("/people", async (req, res) => {
   }
 });
 
+app.put("/people/:PN", async (req, res) => {
+  try {
+    let person = req.body;
+    let sql = "update people set firstname=?,lastname=? where id=?";
+    let result = await db.query(sql, [
+      person.firstname,
+      person.lastname,
+      req.params.PN,
+    ]);
+    res.send(result);
+  } catch (error) {
+    res.status(404).send(error.message);
+  }
+});
+
 app.delete("/people/:PN", async (req, res) => {
   console.log(req.params.PN);
   try {
