@@ -19,7 +19,6 @@ const data =[
 
 app.get("/people", async (req, res)=>{
     try {
-        console.log("In people");
         let result = await db.query("SELECT * from people")
         res.send(result);
     } catch (error) {
@@ -32,19 +31,23 @@ app.get("/people", async (req, res)=>{
 app.post("/people",async (req,res)=>{
     let person = req.body;
     let sql = "insert into people values(?,?,?)";
+    let id = "SELECT MAX(ID) FROM people"
     try {
-        console.log("In people");
-        let result = await db.query(sql, [2,person.firstname, person.lastname])
+        let result = await db.query(sql, [parseInt(id)+1,person.firstname, person.lastname])
         res.send(result);
     } catch (error) {
         res.status(404).send(error.message);
     }
 });
 
-app.delete("/people/:id", (req,res)=>{
-    let id = req.params.id;
-    data.splice(id, 1);
-    res.send("done")
+app.delete("/people:PN",async (req,res)=>{
+    try {
+    let id = "delete from people where ID=?";
+    let result = await db.query(id,[req.params.PN])
+    res.send(result)
+    }catch (error) {
+        res.status(404).send(error.message);
+    }
 })
 
 app.listen(port, ()=>{
