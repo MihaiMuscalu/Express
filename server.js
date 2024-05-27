@@ -1,6 +1,7 @@
 
 const express = require("express")
 const bodyParser = require('body-parser');
+const db = require("./db");
 
 const app = express()
 const port = 3000;
@@ -16,19 +17,28 @@ const data =[
 ]
 
 
-app.get("/people", (req, res)=>{
-    res.send(data);
+app.get("/people", async (req, res)=>{
+    try {
+        console.log("In people");
+        let result = await db.query("SELECT * from people")
+        res.send(result);
+    } catch (error) {
+        res.status(404).send(error.message);
+    }
+
 });
 
-app.get("/people/:id", (req, res)=>{
-    let id = req.params.id;
-    res.send(data[id]);
-});
 
-app.post("/people",(req,res)=>{
-    data.push(req.body);
-
-    res.send(req.body);
+app.post("/people",async (req,res)=>{
+    let person = req.body;
+    let sql = "insert into people values(?,?,?)";
+    try {
+        console.log("In people");
+        let result = await db.query(sql, [2,person.firstname, person.lastname])
+        res.send(result);
+    } catch (error) {
+        res.status(404).send(error.message);
+    }
 });
 
 app.delete("/people/:id", (req,res)=>{
