@@ -8,13 +8,6 @@ const port = 3000;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-const data = [
-  { name: "hans", age: 17, id: 0 },
-  { name: "paul", age: 17, id: 1 },
-  { name: "peter", age: 17, id: 2 },
-  { name: "sepp", age: 17, id: 3 },
-];
-
 app.get("/people", async (req, res) => {
   try {
     let result = await db.query("SELECT * from people");
