@@ -51,8 +51,16 @@ app.get("/people/search/:term", async (req, res) => {
   }
 });
 
+// Add validation middleware for new people
+const validatePerson = (req, res, next) => {
+  if (!req.body.firstname || !req.body.lastname) {
+    return res.status(400).send("Firstname and lastname are required!");
+  }
+  next();
+};
+
 //Insert a person
-app.post("/people", async (req, res) => {
+app.post("/people", validatePerson, async (req, res) => {
   let person = req.body;
   let sql = "insert into people values(?,?,?)";
   let id = "SELECT MAX(ID) FROM people";
